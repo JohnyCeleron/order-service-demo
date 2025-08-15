@@ -1,0 +1,42 @@
+version: '1'
+
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: broker
+    ports:
+      - 9092:9092
+    environment:
+      - name=value
+      - name=value
+    networks:
+      - app_network
+
+  redis:
+    image: redis:latest
+    container_name: cache
+    ports:
+      - 6379:6379
+    environment:
+      - name=value
+    networks:
+      - app_network
+
+  postgres_db:
+    image: postgres:16
+    container_name: database
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=OrderDB
+    networks:
+      - app_network
+
+  server:
+    ...
+
+networks:
+  app_network:
+    driver: bridge
