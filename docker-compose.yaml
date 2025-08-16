@@ -1,42 +1,46 @@
-version: '1'
-
 services:
-  kafka:
-    image: apache/kafka:latest
-    container_name: broker
-    ports:
-      - 9092:9092
-    environment:
-      - name=value
-      - name=value
-    networks:
-      - app_network
+  #kafka:
+  #  image: apache/kafka:latest
+  #  container_name: broker
+  #  ports:
+  #    - 9092:9092
+  #  environment:
+  #    - name=value
+  #    - name=value
+  #  networks:
+  #    - app_network
 
-  redis:
-    image: redis:latest
-    container_name: cache
-    ports:
-      - 6379:6379
-    environment:
-      - name=value
-    networks:
-      - app_network
+  #redis:
+  #  image: redis:latest
+  #  container_name: cache
+  #  ports:
+  #    - 6379:6379
+  #  environment:
+  #    - name=value
+  #  networks:
+  #    - app_network
 
-  postgres_db:
+  postgres:
     image: postgres:16
     container_name: database
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=OrderDB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecret
+      - POSTGRES_DB=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
     networks:
       - app_network
 
-  server:
-    ...
+  #server:
+  #  ...
 
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  pgdata:
