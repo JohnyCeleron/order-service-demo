@@ -44,3 +44,6 @@ migrate-reset:
 # Подключиться к БД через psql
 db-connect:
 	docker exec -it database psql -U $(APP_DB_USER) -d $(APP_DB_NAME)
+
+run:
+	go run cmd/app/main.go
