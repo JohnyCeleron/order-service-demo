@@ -9,7 +9,7 @@ type Order struct {
 	DeliveryID        uint
 	Delivery          Delivery `gorm:"foreignKey:DeliveryID"`
 	PaymentID         uint
-	Payment           Payments  `gorm:"foreignKey:PaymentID"`
+	Payment           Payment   `gorm:"foreignKey:PaymentID"`
 	Locale            string    `gorm:"type:varchar(10);not null"`
 	InternalSignature string    `gorm:"type:varchar(50);not null"`
 	CustomerID        string    `gorm:"type:varchar(50);not null"`

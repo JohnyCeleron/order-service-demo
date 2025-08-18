@@ -1,6 +1,6 @@
 package models_db
 
-type Payments struct {
+type Payment struct {
 	Id           uint   `gorm:"primaryKey;autoIncrement"`
 	Transaction  string `gorm:"type:varchar(100);not null;unique"`
 	RequestID    string `gorm:"type:varchar(100)"`

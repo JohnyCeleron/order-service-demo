@@ -1,26 +1,32 @@
 package app
 
 import (
-	"log"
+	"context"
 
-	"github.com/joho/godotenv"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type Application struct {
-	db *gorm.DB
+	db  *gorm.DB
+	rdb *redis.Client
+	ctx *context.Context
 }
 
 func New() (*Application, error) {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	db, err := createDatabase()
+	db, err := newDatabase()
 	if err != nil {
 		return &Application{}, err
 	}
+
+	rdb, ctx, err := newRedis()
+	if err != nil {
+		return &Application{}, err
+	}
+
 	return &Application{
-		db: db,
+		db:  db,
+		rdb: rdb,
+		ctx: ctx,
 	}, nil
 }

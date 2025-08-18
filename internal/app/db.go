@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func createDatabase() (*gorm.DB, error) {
+func newDatabase() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v",
 		os.Getenv("DB_HOST"),
 		os.Getenv("APP_DB_USER"),
