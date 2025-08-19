@@ -11,11 +11,15 @@ import (
 	"order-service/internal/repository/model"
 )
 
+type PostgresStorage struct {
+	DB *gorm.DB
+}
+
 type PostgresOrder struct {
 	PostgresStorage
 }
 
-func NewOrder(db *gorm.DB) *PostgresOrder {
+func New(db *gorm.DB) *PostgresOrder {
 	return &PostgresOrder{
 		PostgresStorage{
 			DB: db,

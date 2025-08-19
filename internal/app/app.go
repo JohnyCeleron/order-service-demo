@@ -9,16 +9,16 @@ import (
 )
 
 type Application struct {
-	dbOrder repository.OrderRepository
+	orderRepository repository.OrderRepository
 }
 
 func New() (*Application, error) {
-	dbOrder, err := NewPostgresOrder()
+	orderRepository, err := NewPostgresOrderRepository()
 	if err != nil {
 		return &Application{}, err
 	}
 	return &Application{
-		dbOrder: dbOrder,
+		orderRepository: orderRepository,
 	}, nil
 }
 
@@ -87,10 +87,10 @@ func (a *Application) Run() error {
 		OofShard:          "1",
 	}
 
-	if err := a.dbOrder.Add(test); err != nil {
+	if err := a.orderRepository.Add(test); err != nil {
 		return err
 	}
-	newTest, err := a.dbOrder.Get("b563feb7b2b84b6test")
+	newTest, err := a.orderRepository.Get("b563feb7b2b84b6test")
 	if err != nil {
 		return err
 	}

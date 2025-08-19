@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm/logger"
 
 	"order-service/internal/repository/model"
-	"order-service/internal/repository/storagePostgres"
+	storagePostgres "order-service/internal/repository/storage/postgres"
 )
 
-func NewPostgresOrder() (*storagePostgres.PostgresOrder, error) {
+func NewPostgresOrderRepository() (*storagePostgres.PostgresOrder, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v",
 		os.Getenv("DB_HOST"),
 		os.Getenv("APP_DB_USER"),
