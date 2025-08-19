@@ -25,7 +25,11 @@ func NewOrder(db *gorm.DB) *PostgresOrder {
 
 func (storage *PostgresOrder) GetAll() ([]domain.Order, error) {
 	var orders []model.Order
-	if err := storage.DB.Find(&orders).Error; err != nil {
+	if err := storage.DB.
+		Joins("Delivery").
+		Joins("Payment").
+		Preload("Items").
+		Find(&orders).Error; err != nil {
 		return []domain.Order{}, err
 	}
 	domainOrders := make([]domain.Order, len(orders))
@@ -38,10 +42,10 @@ func (storage *PostgresOrder) GetAll() ([]domain.Order, error) {
 func (storage *PostgresOrder) Get(id string) (domain.Order, error) {
 	var order model.Order
 	if err := storage.DB.
-		Preload("Delivery").
-		Preload("Payment").
+		Joins("Delivery").
+		Joins("Payment").
 		Preload("Items").
-		Where("id = ?", id).
+		Where("orders.id = ?", id).
 		First(&order).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Order{}, fmt.Errorf("order with id %s not found", id)
