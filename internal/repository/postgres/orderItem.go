@@ -1,9 +1,9 @@
-package storagePostgres
+package postgres
 
 import (
 	"gorm.io/gorm"
 
-	modelDB "order-service/internal/models/db"
+	"order-service/internal/repository/model"
 )
 
 type PostgresOrderItem struct {
@@ -18,23 +18,23 @@ func NewOrderItem(db *gorm.DB) *PostgresPayment {
 	}
 }
 
-func (storage *PostgresOrderItem) GetAll() ([]modelDB.OrderItem, error) {
-	var orderItem []modelDB.OrderItem
+func (storage *PostgresOrderItem) GetAll() ([]model.OrderItem, error) {
+	var orderItem []model.OrderItem
 	if err := storage.db.Find(&orderItem).Error; err != nil {
-		return []modelDB.OrderItem{}, err
+		return []model.OrderItem{}, err
 	}
 	return orderItem, nil
 }
 
-func (storage *PostgresOrderItem) Get(id uint) (modelDB.OrderItem, error) {
-	var orderItem modelDB.OrderItem
+func (storage *PostgresOrderItem) Get(id uint) (model.OrderItem, error) {
+	var orderItem model.OrderItem
 	if err := storage.db.Where("id = ?", id).First(&orderItem).Error; err != nil {
-		return modelDB.OrderItem{}, err
+		return model.OrderItem{}, err
 	}
 	return orderItem, nil
 }
 
-func (storage *PostgresOrderItem) Add(orderItem modelDB.OrderItem) error {
+func (storage *PostgresOrderItem) Add(orderItem model.OrderItem) error {
 	result := storage.db.Create(&orderItem)
 	if result.Error != nil {
 		return result.Error

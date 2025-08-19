@@ -1,9 +1,9 @@
-package storagePostgres
+package postgres
 
 import (
 	"gorm.io/gorm"
 
-	modelDB "order-service/internal/models/db"
+	"order-service/internal/domain"
 )
 
 type PostgresDelivery struct {
@@ -18,23 +18,23 @@ func NewDelivery(db *gorm.DB) *PostgresDelivery {
 	}
 }
 
-func (storage *PostgresDelivery) GetAll() ([]modelDB.Delivery, error) {
-	var deliveries []modelDB.Delivery
+func (storage *PostgresDelivery) GetAll() ([]domain.Delivery, error) {
+	var deliveries []domain.Delivery
 	if err := storage.db.Find(&deliveries).Error; err != nil {
-		return []modelDB.Delivery{}, err
+		return []domain.Delivery{}, err
 	}
 	return deliveries, nil
 }
 
-func (storage *PostgresDelivery) Get(id uint) (modelDB.Delivery, error) {
-	var delivery modelDB.Delivery
+func (storage *PostgresDelivery) Get(id uint) (domain.Delivery, error) {
+	var delivery domain.Delivery
 	if err := storage.db.Where("id = ?", id).First(&delivery).Error; err != nil {
-		return modelDB.Delivery{}, err
+		return domain.Delivery{}, err
 	}
 	return delivery, nil
 }
 
-func (storage *PostgresDelivery) Add(delivery modelDB.Delivery) error {
+func (storage *PostgresDelivery) Add(delivery domain.Delivery) error {
 	result := storage.db.Create(&delivery)
 	if result.Error != nil {
 		return result.Error

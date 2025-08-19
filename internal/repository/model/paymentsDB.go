@@ -1,7 +1,7 @@
-package models_db
+package model
 
 type Payment struct {
-	Id           uint   `gorm:"primaryKey;autoIncrement"`
+	ID           uint   `gorm:"primaryKey;autoIncrement"`
 	Transaction  string `gorm:"type:varchar(100);not null;unique"`
 	RequestID    string `gorm:"type:varchar(100)"`
 	Currency     string `gorm:"type:varchar(10);not null"`

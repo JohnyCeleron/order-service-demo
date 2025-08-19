@@ -1,4 +1,4 @@
-package model_kafka
+package domain
 
 type OrderItem struct {
 	ChrtID      int    `json:"chrt_id"`

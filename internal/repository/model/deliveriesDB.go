@@ -1,7 +1,7 @@
-package models_db
+package model
 
 type Delivery struct {
-	Id      uint   `gorm:"primaryKey;autoIncrement"`
+	ID      uint   `gorm:"primaryKey;autoIncrement"`
 	Name    string `gorm:"type:varchar(50);not null"`
 	Phone   string `gorm:"type:varchar(50);not null;check:phone ~ '^\\+[0-9]{10,}$'"`
 	Zip     string `gorm:"type:varchar(50);not null"`

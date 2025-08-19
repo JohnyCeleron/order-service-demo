@@ -1,4 +1,4 @@
-package storagePostgres
+package postgres
 
 import "gorm.io/gorm"
 

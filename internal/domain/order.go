@@ -1,4 +1,4 @@
-package model_kafka
+package domain
 
 import "time"
 

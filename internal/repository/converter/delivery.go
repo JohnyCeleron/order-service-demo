@@ -1,0 +1,30 @@
+package converter
+
+import (
+	"order-service/internal/domain"
+	"order-service/internal/repository/model"
+)
+
+func DeliveryDomainToModelDB(d domain.Delivery) model.Delivery {
+	return model.Delivery{
+		Name:    d.Name,
+		Phone:   d.Phone,
+		Zip:     d.Zip,
+		City:    d.City,
+		Address: d.Address,
+		Region:  d.Region,
+		Email:   d.Email,
+	}
+}
+
+func DeliveryModelDBToDomain(db model.Delivery) domain.Delivery {
+	return domain.Delivery{
+		Name:    db.Name,
+		Phone:   db.Phone,
+		Zip:     db.Zip,
+		City:    db.City,
+		Address: db.Address,
+		Region:  db.Region,
+		Email:   db.Email,
+	}
+}
