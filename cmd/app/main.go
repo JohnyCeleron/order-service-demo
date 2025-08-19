@@ -3,18 +3,21 @@ package main
 import (
 	"log"
 
-	"order-service/internal/app"
-
 	"github.com/joho/godotenv"
+
+	"order-service/internal/app"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	_, err := app.New()
+	application, err := app.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	if err := application.Run(); err != nil {
+		log.Fatal("Error running application: ", err)
+	}
 }

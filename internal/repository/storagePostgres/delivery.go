@@ -1,4 +1,4 @@
-package postgres
+package storagePostgres
 
 import (
 	"gorm.io/gorm"
@@ -13,14 +13,14 @@ type PostgresDelivery struct {
 func NewDelivery(db *gorm.DB) *PostgresDelivery {
 	return &PostgresDelivery{
 		PostgresStorage{
-			db: db,
+			DB: db,
 		},
 	}
 }
 
 func (storage *PostgresDelivery) GetAll() ([]domain.Delivery, error) {
 	var deliveries []domain.Delivery
-	if err := storage.db.Find(&deliveries).Error; err != nil {
+	if err := storage.DB.Find(&deliveries).Error; err != nil {
 		return []domain.Delivery{}, err
 	}
 	return deliveries, nil
@@ -28,14 +28,14 @@ func (storage *PostgresDelivery) GetAll() ([]domain.Delivery, error) {
 
 func (storage *PostgresDelivery) Get(id uint) (domain.Delivery, error) {
 	var delivery domain.Delivery
-	if err := storage.db.Where("id = ?", id).First(&delivery).Error; err != nil {
+	if err := storage.DB.Where("id = ?", id).First(&delivery).Error; err != nil {
 		return domain.Delivery{}, err
 	}
 	return delivery, nil
 }
 
 func (storage *PostgresDelivery) Add(delivery domain.Delivery) error {
-	result := storage.db.Create(&delivery)
+	result := storage.DB.Create(&delivery)
 	if result.Error != nil {
 		return result.Error
 	}

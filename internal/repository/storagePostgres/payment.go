@@ -1,4 +1,4 @@
-package postgres
+package storagePostgres
 
 import (
 	"gorm.io/gorm"
@@ -13,14 +13,14 @@ type PostgresPayment struct {
 func NewPayment(db *gorm.DB) *PostgresPayment {
 	return &PostgresPayment{
 		PostgresStorage{
-			db: db,
+			DB: db,
 		},
 	}
 }
 
 func (storage *PostgresPayment) GetAll() ([]model.Payment, error) {
 	var payments []model.Payment
-	if err := storage.db.Find(&payments).Error; err != nil {
+	if err := storage.DB.Find(&payments).Error; err != nil {
 		return []model.Payment{}, err
 	}
 	return payments, nil
@@ -28,14 +28,14 @@ func (storage *PostgresPayment) GetAll() ([]model.Payment, error) {
 
 func (storage *PostgresPayment) Get(id uint) (model.Payment, error) {
 	var payment model.Payment
-	if err := storage.db.Where("id = ?", id).First(&payment).Error; err != nil {
+	if err := storage.DB.Where("id = ?", id).First(&payment).Error; err != nil {
 		return model.Payment{}, err
 	}
 	return payment, nil
 }
 
 func (storage *PostgresPayment) Add(payment model.Payment) error {
-	result := storage.db.Create(&payment)
+	result := storage.DB.Create(&payment)
 	if result.Error != nil {
 		return result.Error
 	}

@@ -7,9 +7,12 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"order-service/internal/repository/model"
+	"order-service/internal/repository/storagePostgres"
 )
 
-func newDatabase() (*gorm.DB, error) {
+func NewPostgresOrder() (*storagePostgres.PostgresOrder, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v",
 		os.Getenv("DB_HOST"),
 		os.Getenv("APP_DB_USER"),
@@ -22,7 +25,12 @@ func newDatabase() (*gorm.DB, error) {
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		return &gorm.DB{}, fmt.Errorf("failed to connect to database:", err)
+		return &storagePostgres.PostgresOrder{}, fmt.Errorf("failed to connect to database:", err)
 	}
-	return db, nil
+	db.AutoMigrate(&model.Order{}, &model.Delivery{}, &model.OrderItem{}, &model.Payment{})
+	return &storagePostgres.PostgresOrder{
+		PostgresStorage: storagePostgres.PostgresStorage{
+			DB: db,
+		},
+	}, nil
 }

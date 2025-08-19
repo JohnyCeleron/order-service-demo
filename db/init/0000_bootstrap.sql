@@ -1,15 +1,19 @@
 -- 0000_bootstrap.sql
+\set ON_ERROR_STOP on
 
--- роль можно через DO (это в транзакции допустимо)
+-- Роль можно создать внутри DO (транзакция допустима)
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${APP_DB_USER}') THEN
-    CREATE ROLE '${APP_DB_USER}' LOGIN PASSWORD '${APP_DB_PASSWORD}' NOSUPERUSER NOCREATEROLE NOCREATEDB;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'app') THEN
+    CREATE ROLE app LOGIN PASSWORD 'secret' NOSUPERUSER NOCREATEROLE NOCREATEDB;
   END IF;
-END$$;
+END
+$$;
 
--- ВАЖНО: CREATE DATABASE — отдельным выражением, без DO
-CREATE DATABASE '${APP_DB_NAME}' OWNER '${APP_DB_USER}';
+-- CREATE DATABASE нельзя внутри транзакции; делаем условно через \gexec
+SELECT 'CREATE DATABASE wb_level0_db OWNER app'
+WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'wb_level0_db')
+\gexec
 
--- настройки роли
-ALTER ROLE '${APP_DB_USER}' SET search_path = app, public;
+-- Настройки роли (идентификатор без кавычек; строк не нужно)
+ALTER ROLE app SET search_path = app, public;
