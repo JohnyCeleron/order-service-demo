@@ -1,4 +1,4 @@
-package storagePostgres
+package postgres
 
 import (
 	"errors"
@@ -19,12 +19,16 @@ type PostgresOrder struct {
 	PostgresStorage
 }
 
-func New(db *gorm.DB) *PostgresOrder {
+func New() (*PostgresOrder, error) {
+	db, err := SetupPostgres()
+	if err != nil {
+		return &PostgresOrder{}, err
+	}
 	return &PostgresOrder{
 		PostgresStorage{
 			DB: db,
 		},
-	}
+	}, nil
 }
 
 func (storage *PostgresOrder) GetAll() ([]domain.Order, error) {

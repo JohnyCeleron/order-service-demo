@@ -1,18 +1,16 @@
-package app
+package postgres
 
 import (
 	"fmt"
+	"order-service/internal/repository/model"
 	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-
-	"order-service/internal/repository/model"
-	storagePostgres "order-service/internal/repository/storage/postgres"
 )
 
-func NewPostgresOrderRepository() (*storagePostgres.PostgresOrder, error) {
+func SetupPostgres() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v",
 		os.Getenv("DB_HOST"),
 		os.Getenv("APP_DB_USER"),
@@ -25,12 +23,8 @@ func NewPostgresOrderRepository() (*storagePostgres.PostgresOrder, error) {
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		return &storagePostgres.PostgresOrder{}, fmt.Errorf("failed to connect to database:", err)
+		return &gorm.DB{}, fmt.Errorf("failed to connect to database:", err)
 	}
 	db.AutoMigrate(&model.Order{}, &model.Delivery{}, &model.OrderItem{}, &model.Payment{})
-	return &storagePostgres.PostgresOrder{
-		PostgresStorage: storagePostgres.PostgresStorage{
-			DB: db,
-		},
-	}, nil
+	return db, nil
 }

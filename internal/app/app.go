@@ -1,99 +1,58 @@
 package app
 
 import (
+	"context"
 	"log"
-	"time"
+	"os"
+	"os/signal"
+	"syscall"
 
+	"order-service/internal/broker/consumer/kafka"
 	"order-service/internal/domain"
-	repository "order-service/internal/repository/interfaces"
+	"order-service/internal/repository/cache/redis"
+	"order-service/internal/repository/db/postgres"
+	"order-service/internal/service/order"
 )
 
 type Application struct {
-	orderRepository repository.OrderRepository
+	serviceOrder *order.OrderService
+	consumer     *kafka.Consumer
 }
 
+const messageBuffer int = 4
+
 func New() (*Application, error) {
-	orderRepository, err := NewPostgresOrderRepository()
+	repoOrderDB, err := postgres.New()
 	if err != nil {
 		return &Application{}, err
 	}
+	repoOrderCache, err := redis.New()
+	if err != nil {
+		return &Application{}, err
+	}
+	messageChan := make(chan domain.Order, messageBuffer)
+	consumer, err := kafka.New(messageChan)
+	if err != nil {
+		return &Application{}, err
+	}
+	serviceOrder := order.NewService(repoOrderDB, repoOrderCache, messageChan)
 	return &Application{
-		orderRepository: orderRepository,
+		serviceOrder: serviceOrder,
+		consumer:     consumer,
 	}, nil
 }
 
 func (a *Application) Run() error {
-	t, _ := time.Parse(time.RFC3339, "2021-11-26T06:22:19Z")
-	test := domain.Order{
-		OrderUID:    "b563feb7b2b84b6test",
-		TrackNumber: "WBILMTESTTRACK",
-		Entry:       "WBIL",
-		Delivery: domain.Delivery{
-			Name:    "Test Testov",
-			Phone:   "+9720000000",
-			Zip:     "2639809",
-			City:    "Kiryat Mozkin",
-			Address: "Ploshad Mira 15",
-			Region:  "Kraiot",
-			Email:   "test@gmail.com",
-		},
-		Payment: domain.Payment{
-			Transaction:  "b563feb7b2b84b6test",
-			RequestID:    "",
-			Currency:     "USD",
-			Provider:     "wbpay",
-			Amount:       1817,
-			PaymentDt:    1637907727,
-			Bank:         "alpha",
-			DeliveryCost: 1500,
-			GoodsTotal:   317,
-			CustomFee:    0,
-		},
-		Items: []domain.OrderItem{
-			{
-				ChrtID:      9934930,
-				TrackNumber: "WBILMTESTTRACK",
-				Price:       453,
-				Rid:         "ab4219087a764ae0btest",
-				Name:        "Mascaras",
-				Sale:        30,
-				Size:        "0",
-				TotalPrice:  317,
-				NmID:        2389212,
-				Brand:       "Vivienne Sabo",
-				Status:      202,
-			},
-			{
-				ChrtID:      9934930,
-				TrackNumber: "WBILMTESTTRACK",
-				Price:       453,
-				Rid:         "ab4219087a764ae0btest",
-				Name:        "Mascaras",
-				Sale:        30,
-				Size:        "0",
-				TotalPrice:  317,
-				NmID:        2389212,
-				Brand:       "Vivienne Sabo",
-				Status:      202,
-			},
-		},
-		Locale:            "en",
-		InternalSignature: "",
-		CustomerID:        "test",
-		DeliveryService:   "meest",
-		ShardKey:          "9",
-		SmID:              99,
-		DateCreated:       t,
-		OofShard:          "1",
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-signalChan
+		cancel()
+	}()
 
-	if err := a.orderRepository.Add(test); err != nil {
-		return err
-	}
-	newTest, err := a.orderRepository.Get("b563feb7b2b84b6test")
-	if err != nil {
-		return err
-	}
-	log.Println(newTest)
+	<-ctx.Done()
+
+	log.Println("Gracefull Shutdown")
 	return nil
 }

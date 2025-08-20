@@ -1,0 +1,49 @@
+package redis
+
+import (
+	"context"
+	"encoding/json"
+
+	"github.com/redis/go-redis/v9"
+
+	"order-service/internal/domain"
+)
+
+type Redis struct {
+	rdb *redis.Client
+}
+
+func New() (*Redis, error) {
+	rdb, err := SetupRedis()
+	if err != nil {
+		return &Redis{}, err
+	}
+	return &Redis{
+		rdb: rdb,
+	}, nil
+}
+
+func (client *Redis) Set(ctx context.Context, key string, value domain.Order) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	return client.rdb.Set(ctx, key, data, 0).Err()
+}
+
+func (client *Redis) Contains(ctx context.Context, key string) (bool, error) {
+	//TODO:
+	return false, nil
+}
+
+func (client *Redis) Get(ctx context.Context, key string) (domain.Order, error) {
+	data, err := client.rdb.Get(ctx, key).Bytes()
+	if err != nil {
+		return domain.Order{}, err
+	}
+	var order domain.Order
+	if err = json.Unmarshal(data, &order); err != nil {
+		return domain.Order{}, err
+	}
+	return order, nil
+}
