@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -29,13 +30,18 @@ func New(messageChannel chan domain.Order) (*Consumer, error) {
 	}, nil
 }
 
-func (c *Consumer) Run(ctx context.Context) {
+func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
+	defer func() {
+		log.Println("stop consumer: ", ctx.Err())
+		close(c.messageChannel)
+		log.Println("stop connection with broker")
+		c.reader.Close()
+		wg.Add(1)
+	}()
+
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("stop consumer: ", ctx.Err())
-			close(c.messageChannel)
-			c.reader.Close()
 			return
 		default:
 			msg, err := c.reader.ReadMessage(readingMessageTimeout)

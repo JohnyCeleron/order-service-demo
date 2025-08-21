@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"order-service/internal/broker/consumer/kafka"
@@ -50,6 +51,16 @@ func (a *Application) Run() error {
 		<-signalChan
 		cancel()
 	}()
+
+	a.serviceOrder.PreLoad(ctx)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go a.consumer.Run(ctx, &wg)
+	go a.serviceOrder.HandleMessage(ctx, &wg)
+
+	wg.Wait()
 
 	<-ctx.Done()
 

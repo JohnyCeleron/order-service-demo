@@ -2,7 +2,6 @@ package order
 
 import (
 	"context"
-	"log"
 
 	"order-service/internal/domain"
 )
@@ -30,17 +29,5 @@ func NewService(repoDB OrderRepositoryDB, repoCache OrderRepositoryCache, messag
 		repoDB:         repoDB,
 		repoCache:      repoCache,
 		messageChannel: messageChannel,
-	}
-}
-
-func (o *OrderService) Run(ctx context.Context) {
-
-}
-
-func (o *OrderService) HandleMessage(ctx context.Context) {
-	for order := range o.messageChannel {
-		if err := o.repoDB.Add(order); err != nil {
-			log.Println("ошибка добавления заказа в бд: ", err)
-		}
 	}
 }
