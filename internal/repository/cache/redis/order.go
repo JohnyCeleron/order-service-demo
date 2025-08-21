@@ -47,3 +47,7 @@ func (client *Redis) Get(ctx context.Context, key string) (domainOrder.Order, er
 	}
 	return order, nil
 }
+
+func (client *Redis) Close() error {
+	return client.rdb.Close()
+}

@@ -8,7 +8,7 @@ import (
 
 func (o *OrderService) HandleMessage(ctx context.Context, wg *sync.WaitGroup) {
 	defer func() {
-		wg.Add(1)
+		wg.Done()
 	}()
 
 	for order := range o.messageChannel {

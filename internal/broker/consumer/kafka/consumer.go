@@ -36,7 +36,7 @@ func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
 		close(c.messageChannel)
 		log.Println("stop connection with broker")
 		c.reader.Close()
-		wg.Add(1)
+		wg.Done()
 	}()
 
 	for {
