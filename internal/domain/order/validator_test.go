@@ -2,22 +2,22 @@ package domain
 
 import "testing"
 
-func TestOrderItem_RequiredField(t *testing.T) {
-	run(t, orderItemRequiredValidateTestCases)
+func TestOrder_RequiredField(t *testing.T) {
+	run(t, orderRequiredValidateTestCases)
 }
 
-func run(t *testing.T, tests []OrderItemValidateTestCase) {
+func run(t *testing.T, tests []OrderValidateTestCase) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual, err := tt.orderItem.Validate()
+			actual, err := tt.order.Validate()
 
 			if (err != nil) != tt.wantErr {
-				t.Errorf("OrderItem.Validate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Order.Validate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if actual != tt.expected {
-				t.Errorf("OrderItem.Validate() = %v, want %v", actual, tt.expected)
+				t.Errorf("Order.Validate() = %v, want %v", actual, tt.expected)
 			}
 
 			if tt.wantErr && tt.errMsg != "" {

@@ -54,6 +54,10 @@ func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
 				log.Println("error unmarshal broker message: ", err)
 				continue
 			}
+			if valid, err := order.Validate(); !valid {
+				log.Println("некорректные данные из брокера: ", err)
+				continue
+			}
 			c.messageChannel <- order
 		}
 	}
