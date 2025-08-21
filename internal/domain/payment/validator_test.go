@@ -3,19 +3,21 @@ package domain
 import "testing"
 
 func TestPayment_Validate(t *testing.T) {
-	tests := paymentTestCases
+	run(t, paymentTestCases)
+}
 
+func run(t *testing.T, tests []PaymentValidateTestCase) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			actual, err := tt.payment.Validate()
 
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Payment.Validate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("OrderItem.Validate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if actual != tt.expected {
-				t.Errorf("Payment.Validate() = %v, want %v", actual, tt.expected)
+				t.Errorf("OrderItem.Validate() = %v, want %v", actual, tt.expected)
 			}
 
 			if tt.wantErr && tt.errMsg != "" {
