@@ -13,6 +13,6 @@
 graph TD
     A[User] --> B[Order Service]
     C[Kafka] --> B
-    B --> C[(Redis)]
-    B --> D[(Postgres)]
+    B --> D[(Redis)]
+    B --> E[(Postgres)]
 ```
