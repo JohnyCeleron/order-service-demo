@@ -1,11 +1,11 @@
 package converter
 
 import (
-	"order-service/internal/domain"
+	domainPayment "order-service/internal/domain/payment"
 	"order-service/internal/repository/model"
 )
 
-func PaymentDomainToModelDB(p domain.Payment) model.Payment {
+func PaymentDomainToModelDB(p domainPayment.Payment) model.Payment {
 	return model.Payment{
 		Transaction:  p.Transaction,
 		RequestID:    p.RequestID,
@@ -20,8 +20,8 @@ func PaymentDomainToModelDB(p domain.Payment) model.Payment {
 	}
 }
 
-func PaymentModelDBToDomain(db model.Payment) domain.Payment {
-	return domain.Payment{
+func PaymentModelDBToDomain(db model.Payment) domainPayment.Payment {
+	return domainPayment.Payment{
 		Transaction:  db.Transaction,
 		RequestID:    db.RequestID,
 		Currency:     db.Currency,

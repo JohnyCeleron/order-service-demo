@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
 	"order-service/internal/repository/converter"
 	"order-service/internal/repository/model"
 )
@@ -31,23 +31,23 @@ func New() (*PostgresOrder, error) {
 	}, nil
 }
 
-func (storage *PostgresOrder) GetAll() ([]domain.Order, error) {
+func (storage *PostgresOrder) GetAll() ([]domainOrder.Order, error) {
 	var orders []model.Order
 	if err := storage.DB.
 		Joins("Delivery").
 		Joins("Payment").
 		Preload("Items").
 		Find(&orders).Error; err != nil {
-		return []domain.Order{}, err
+		return []domainOrder.Order{}, err
 	}
-	domainOrders := make([]domain.Order, len(orders))
+	domainOrders := make([]domainOrder.Order, len(orders))
 	for i, order := range orders {
 		domainOrders[i] = converter.OrderModelDBToDomain(order)
 	}
 	return domainOrders, nil
 }
 
-func (storage *PostgresOrder) Get(id string) (domain.Order, error) {
+func (storage *PostgresOrder) Get(id string) (domainOrder.Order, error) {
 	var order model.Order
 	if err := storage.DB.
 		Joins("Delivery").
@@ -56,14 +56,14 @@ func (storage *PostgresOrder) Get(id string) (domain.Order, error) {
 		Where("orders.id = ?", id).
 		First(&order).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return domain.Order{}, fmt.Errorf("order with id %s not found", id)
+			return domainOrder.Order{}, fmt.Errorf("order with id %s not found", id)
 		}
-		return domain.Order{}, fmt.Errorf("failed to get order: %v", err)
+		return domainOrder.Order{}, fmt.Errorf("failed to get order: %v", err)
 	}
 	return converter.OrderModelDBToDomain(order), nil
 }
 
-func (storage *PostgresOrder) Add(order domain.Order) error {
+func (storage *PostgresOrder) Add(order domainOrder.Order) error {
 	modelOrder := converter.OrderDomainToModelDB(order)
 	result := storage.DB.Create(&modelOrder)
 	if result.Error != nil {

@@ -1,16 +1,17 @@
 package converter
 
 import (
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
+	domainOrderItem "order-service/internal/domain/orderItem"
 	"order-service/internal/repository/model"
 )
 
-func OrderModelDBToDomain(dbOrder model.Order) domain.Order {
-	domainItems := make([]domain.OrderItem, len(dbOrder.Items))
+func OrderModelDBToDomain(dbOrder model.Order) domainOrder.Order {
+	domainItems := make([]domainOrderItem.OrderItem, len(dbOrder.Items))
 	for i, item := range dbOrder.Items {
 		domainItems[i] = OrderItemModelDBToDomain(item)
 	}
-	return domain.Order{
+	return domainOrder.Order{
 		OrderUID:          dbOrder.ID,
 		TrackNumber:       dbOrder.TrackNumber,
 		Entry:             dbOrder.Entry,
@@ -28,7 +29,7 @@ func OrderModelDBToDomain(dbOrder model.Order) domain.Order {
 	}
 }
 
-func OrderDomainToModelDB(domainOrder domain.Order) model.Order {
+func OrderDomainToModelDB(domainOrder domainOrder.Order) model.Order {
 	modelItems := make([]model.OrderItem, len(domainOrder.Items))
 	for i, item := range domainOrder.Items {
 		modelItems[i] = OrderItemDomainToModelDB(item, domainOrder.OrderUID)

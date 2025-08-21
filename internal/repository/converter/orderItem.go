@@ -1,11 +1,11 @@
 package converter
 
 import (
-	"order-service/internal/domain"
+	domainOrderItem "order-service/internal/domain/orderItem"
 	"order-service/internal/repository/model"
 )
 
-func OrderItemDomainToModelDB(item domain.OrderItem, orderID string) model.OrderItem {
+func OrderItemDomainToModelDB(item domainOrderItem.OrderItem, orderID string) model.OrderItem {
 	return model.OrderItem{
 		ChrtID:      item.ChrtID,
 		TrackNumber: item.TrackNumber,
@@ -22,8 +22,8 @@ func OrderItemDomainToModelDB(item domain.OrderItem, orderID string) model.Order
 	}
 }
 
-func OrderItemModelDBToDomain(item model.OrderItem) domain.OrderItem {
-	return domain.OrderItem{
+func OrderItemModelDBToDomain(item model.OrderItem) domainOrderItem.OrderItem {
+	return domainOrderItem.OrderItem{
 		ChrtID:      item.ChrtID,
 		TrackNumber: item.TrackNumber,
 		Price:       item.Price,

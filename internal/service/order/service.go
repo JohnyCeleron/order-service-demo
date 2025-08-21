@@ -3,28 +3,28 @@ package order
 import (
 	"context"
 
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
 )
 
 type OrderRepositoryDB interface {
-	Get(id string) (domain.Order, error)
-	GetAll() ([]domain.Order, error)
-	Add(order domain.Order) error
+	Get(id string) (domainOrder.Order, error)
+	GetAll() ([]domainOrder.Order, error)
+	Add(order domainOrder.Order) error
 }
 
 type OrderRepositoryCache interface {
-	Get(ctx context.Context, key string) (domain.Order, error)
-	Set(ctx context.Context, key string, value domain.Order) error
+	Get(ctx context.Context, key string) (domainOrder.Order, error)
+	Set(ctx context.Context, key string, value domainOrder.Order) error
 	Contains(ctx context.Context, id string) (bool, error)
 }
 
 type OrderService struct {
 	repoDB         OrderRepositoryDB
 	repoCache      OrderRepositoryCache
-	messageChannel chan domain.Order
+	messageChannel chan domainOrder.Order
 }
 
-func NewService(repoDB OrderRepositoryDB, repoCache OrderRepositoryCache, messageChannel chan domain.Order) *OrderService {
+func NewService(repoDB OrderRepositoryDB, repoCache OrderRepositoryCache, messageChannel chan domainOrder.Order) *OrderService {
 	return &OrderService{
 		repoDB:         repoDB,
 		repoCache:      repoCache,

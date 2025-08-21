@@ -9,17 +9,17 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
 )
 
 const readingMessageTimeout time.Duration = time.Second
 
 type Consumer struct {
 	reader         *kafka.Consumer
-	messageChannel chan domain.Order
+	messageChannel chan domainOrder.Order
 }
 
-func New(messageChannel chan domain.Order) (*Consumer, error) {
+func New(messageChannel chan domainOrder.Order) (*Consumer, error) {
 	reader, err := SetupKafkaConsumer()
 	if err != nil {
 		return &Consumer{}, err
@@ -49,7 +49,7 @@ func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
 				log.Println("error reading from broker: ", err)
 				continue
 			}
-			var order domain.Order
+			var order domainOrder.Order
 			if err = json.Unmarshal(msg.Value, &order); err != nil {
 				log.Println("error unmarshal broker message: ", err)
 				continue

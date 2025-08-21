@@ -6,7 +6,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
 )
 
 type Redis struct {
@@ -23,7 +23,7 @@ func New() (*Redis, error) {
 	}, nil
 }
 
-func (client *Redis) Set(ctx context.Context, key string, value domain.Order) error {
+func (client *Redis) Set(ctx context.Context, key string, value domainOrder.Order) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
@@ -36,14 +36,14 @@ func (client *Redis) Contains(ctx context.Context, key string) (bool, error) {
 	return false, nil
 }
 
-func (client *Redis) Get(ctx context.Context, key string) (domain.Order, error) {
+func (client *Redis) Get(ctx context.Context, key string) (domainOrder.Order, error) {
 	data, err := client.rdb.Get(ctx, key).Bytes()
 	if err != nil {
-		return domain.Order{}, err
+		return domainOrder.Order{}, err
 	}
-	var order domain.Order
+	var order domainOrder.Order
 	if err = json.Unmarshal(data, &order); err != nil {
-		return domain.Order{}, err
+		return domainOrder.Order{}, err
 	}
 	return order, nil
 }

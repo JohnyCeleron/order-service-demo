@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"order-service/internal/broker/consumer/kafka"
-	"order-service/internal/domain"
+	domainOrder "order-service/internal/domain/order"
 	"order-service/internal/repository/cache/redis"
 	"order-service/internal/repository/db/postgres"
 	"order-service/internal/service/order"
@@ -31,7 +31,7 @@ func New() (*Application, error) {
 	if err != nil {
 		return &Application{}, err
 	}
-	messageChan := make(chan domain.Order, messageBuffer)
+	messageChan := make(chan domainOrder.Order, messageBuffer)
 	consumer, err := kafka.New(messageChan)
 	if err != nil {
 		return &Application{}, err
