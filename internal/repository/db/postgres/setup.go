@@ -2,12 +2,13 @@ package postgres
 
 import (
 	"fmt"
-	"order-service/internal/repository/model"
 	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"order-service/internal/repository/model"
 )
 
 func SetupPostgres() (*gorm.DB, error) {

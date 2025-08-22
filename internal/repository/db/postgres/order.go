@@ -71,3 +71,11 @@ func (storage *PostgresOrder) Add(order domainOrder.Order) error {
 	}
 	return nil
 }
+
+func (storage *PostgresOrder) Close() error {
+	sqlDB, err := storage.DB.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.Close()
+}
