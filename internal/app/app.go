@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"log"
-	"os"
 	"os/signal"
 	"sync"
 	"syscall"
@@ -44,27 +43,33 @@ func New() (*Application, error) {
 }
 
 func (a *Application) Run() error {
-	ctx, cancel := context.WithCancel(context.Background())
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-signalChan
-		cancel()
-	}()
-
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 	a.serviceOrder.PreLoad(ctx)
 
 	var wg sync.WaitGroup
-
 	wg.Add(2)
-
 	go a.consumer.Run(ctx, &wg)
 	go a.serviceOrder.HandleMessage(ctx, &wg)
-
 	wg.Wait()
 
 	<-ctx.Done()
-
 	log.Println("Gracefull Shutdown")
+	a.Close()
 	return nil
+}
+
+func (a *Application) Close() {
+	log.Println("Stop Kafka")
+	if err := a.consumer.Close(); err != nil {
+		log.Println("Ошибка при закрытии consumer: ", err)
+	}
+	log.Println("Stop DataBase")
+	if err := a.serviceOrder.RepoDB.Close(); err != nil {
+		log.Println("Ошибка при закрытии базы данных: ", err)
+	}
+	log.Println("Stop Cache")
+	if err := a.serviceOrder.RepoCache.Close(); err != nil {
+		log.Println("Ошибка при закрытии кэша: ", err)
+	}
 }

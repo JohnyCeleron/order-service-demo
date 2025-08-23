@@ -7,12 +7,10 @@ import (
 )
 
 func (o *OrderService) HandleMessage(ctx context.Context, wg *sync.WaitGroup) {
-	defer func() {
-		wg.Done()
-	}()
+	defer wg.Done()
 
 	for order := range o.messageChannel {
-		if err := o.repoDB.Add(order); err != nil {
+		if err := o.RepoDB.Add(order); err != nil {
 			log.Println("ошибка добавления заказа в бд: ", err)
 		}
 	}

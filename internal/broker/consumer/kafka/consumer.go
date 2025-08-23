@@ -31,13 +31,7 @@ func New(messageChannel chan domainOrder.Order) (*Consumer, error) {
 }
 
 func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
-	defer func() {
-		log.Println("stop consumer: ", ctx.Err())
-		close(c.messageChannel)
-		log.Println("stop connection with broker")
-		c.reader.Close()
-		wg.Done()
-	}()
+	defer wg.Done()
 
 	for {
 		select {
@@ -61,4 +55,9 @@ func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
 			c.messageChannel <- order
 		}
 	}
+}
+
+func (c *Consumer) Close() error {
+	close(c.messageChannel)
+	return c.reader.Close()
 }
