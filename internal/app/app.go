@@ -55,6 +55,7 @@ func (a *Application) Run() error {
 	a.serviceOrder.PreLoad(ctx)
 
 	var wg sync.WaitGroup
+
 	wg.Add(2)
 
 	go a.consumer.Run(ctx, &wg)
