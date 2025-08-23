@@ -32,8 +32,11 @@ func (client *Redis) Set(ctx context.Context, key string, value domainOrder.Orde
 }
 
 func (client *Redis) Contains(ctx context.Context, key string) (bool, error) {
-	//TODO:
-	return false, nil
+	exists, err := client.rdb.Exists(ctx, key).Result()
+	if err != nil {
+		return false, err
+	}
+	return exists == 1, nil
 }
 
 func (client *Redis) Get(ctx context.Context, key string) (domainOrder.Order, error) {
