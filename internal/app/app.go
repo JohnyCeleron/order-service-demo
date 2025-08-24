@@ -4,11 +4,9 @@ import (
 	"context"
 	"log"
 	"os/signal"
-	"sync"
 	"syscall"
 
 	"order-service/internal/broker/consumer/kafka"
-	domainOrder "order-service/internal/domain/order"
 	"order-service/internal/repository/cache/redis"
 	"order-service/internal/repository/db/postgres"
 	"order-service/internal/service/order"
@@ -30,12 +28,12 @@ func New() (*Application, error) {
 	if err != nil {
 		return &Application{}, err
 	}
-	messageChan := make(chan domainOrder.Order, messageBuffer)
-	consumer, err := kafka.New(messageChan)
+	serviceOrder := order.NewService(repoOrderDB, repoOrderCache)
+	consumer, err := kafka.New(serviceOrder)
 	if err != nil {
 		return &Application{}, err
 	}
-	serviceOrder := order.NewService(repoOrderDB, repoOrderCache, messageChan)
+
 	return &Application{
 		serviceOrder: serviceOrder,
 		consumer:     consumer,
@@ -47,19 +45,16 @@ func (a *Application) Run() error {
 	defer stop()
 	a.serviceOrder.PreLoad(ctx)
 
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go a.consumer.Run(ctx, &wg)
-	go a.serviceOrder.HandleMessage(ctx, &wg)
-	wg.Wait()
+	go a.consumer.Run(ctx)
 
 	<-ctx.Done()
-	log.Println("Gracefull Shutdown")
 	a.Close()
 	return nil
 }
 
 func (a *Application) Close() {
+	log.Println("Gracefull Shutdown")
+
 	log.Println("Stop Kafka")
 	if err := a.consumer.Close(); err != nil {
 		log.Println("Ошибка при закрытии consumer: ", err)

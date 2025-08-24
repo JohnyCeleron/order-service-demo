@@ -25,15 +25,13 @@ type OrderRepositoryCache interface {
 }
 
 type OrderService struct {
-	RepoDB         OrderRepositoryDB
-	RepoCache      OrderRepositoryCache
-	messageChannel chan domainOrder.Order
+	RepoDB    OrderRepositoryDB
+	RepoCache OrderRepositoryCache
 }
 
-func NewService(repoDB OrderRepositoryDB, repoCache OrderRepositoryCache, messageChannel chan domainOrder.Order) *OrderService {
+func NewService(repoDB OrderRepositoryDB, repoCache OrderRepositoryCache) *OrderService {
 	return &OrderService{
-		RepoDB:         repoDB,
-		RepoCache:      repoCache,
-		messageChannel: messageChannel,
+		RepoDB:    repoDB,
+		RepoCache: repoCache,
 	}
 }

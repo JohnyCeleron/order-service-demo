@@ -3,15 +3,14 @@ package order
 import (
 	"context"
 	"log"
-	"sync"
+
+	domainOrder "order-service/internal/domain/order"
 )
 
-func (o *OrderService) HandleMessage(ctx context.Context, wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	for order := range o.messageChannel {
-		if err := o.RepoDB.Add(order); err != nil {
-			log.Println("ошибка добавления заказа в бд: ", err)
-		}
+func (o *OrderService) HandleMessage(ctx context.Context, order domainOrder.Order) error {
+	if err := o.RepoDB.Add(order); err != nil {
+		log.Println("handle message: ", err)
+		return err
 	}
+	return nil
 }

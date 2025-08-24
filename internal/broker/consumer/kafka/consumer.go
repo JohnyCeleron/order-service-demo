@@ -3,8 +3,9 @@ package kafka
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"sync"
+	"os"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -12,27 +13,42 @@ import (
 	domainOrder "order-service/internal/domain/order"
 )
 
-const readingMessageTimeout time.Duration = time.Second
+const (
+	readingMessageTimeout time.Duration = 2 * time.Second
+	timeoutFlushMs        int           = 10 * 1000
+)
+
+type MessageHandler interface {
+	HandleMessage(ctx context.Context, order domainOrder.Order) error
+}
 
 type Consumer struct {
 	reader         *kafka.Consumer
-	messageChannel chan domainOrder.Order
+	messageHandler MessageHandler
+
+	dlqProducer *kafka.Producer
 }
 
-func New(messageChannel chan domainOrder.Order) (*Consumer, error) {
+func New(messageHandler MessageHandler) (*Consumer, error) {
 	reader, err := SetupKafkaConsumer()
 	if err != nil {
 		return &Consumer{}, err
 	}
+	dlqProd, err := kafka.NewProducer(&kafka.ConfigMap{
+		"bootstrap.servers": os.Getenv("KAFKA_DLQ_BOOTSTRAP_SERVERS"),
+	})
+	if err != nil {
+		reader.Close()
+		return &Consumer{}, err
+	}
 	return &Consumer{
 		reader:         reader,
-		messageChannel: messageChannel,
+		messageHandler: messageHandler,
+		dlqProducer:    dlqProd,
 	}, nil
 }
 
-func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func (c *Consumer) Run(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -40,24 +56,41 @@ func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
 		default:
 			msg, err := c.reader.ReadMessage(readingMessageTimeout)
 			if err != nil {
-				log.Println("error reading from broker: ", err)
+				if kafkaErr, ok := err.(kafka.Error); ok && kafkaErr.Code() == kafka.ErrTimedOut {
+					continue
+				}
+				log.Printf("error reading from broker: %v\n", err)
 				continue
 			}
+
 			var order domainOrder.Order
 			if err = json.Unmarshal(msg.Value, &order); err != nil {
-				log.Println("error unmarshal broker message: ", err)
+				if dlqErr := c.sendToDLQ(ctx, msg, fmt.Errorf("unmarshal: %w", err)); dlqErr != nil {
+					log.Printf("dlq error: %v\n", dlqErr)
+				}
+				c.reader.CommitMessage(msg)
 				continue
 			}
 			if valid, err := order.Validate(); !valid {
-				log.Println("некорректные данные из брокера: ", err)
+				if dlqErr := c.sendToDLQ(ctx, msg, fmt.Errorf("validate: %w", err)); dlqErr != nil {
+					log.Printf("dlq error: %v\n", dlqErr)
+				}
+				c.reader.CommitMessage(msg)
 				continue
 			}
-			c.messageChannel <- order
+
+			if err := c.messageHandler.HandleMessage(ctx, order); err != nil {
+				log.Printf("handle message error: %v\n")
+			}
+			if _, err := c.reader.CommitMessage(msg); err != nil {
+				log.Printf("commit warn: %v", err)
+			}
 		}
 	}
 }
 
 func (c *Consumer) Close() error {
-	close(c.messageChannel)
+	c.dlqProducer.Flush(timeoutFlushMs)
+	c.dlqProducer.Close()
 	return c.reader.Close()
 }
