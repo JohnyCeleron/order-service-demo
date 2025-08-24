@@ -2,12 +2,12 @@ package order
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	domainOrder "order-service/internal/domain/order"
+	"order-service/internal/repository/db"
 )
-
-var errorNotFound error
 
 func (o *OrderService) GetById(ctx context.Context, id string) (domainOrder.Order, error) {
 	orderInCache, _ := o.RepoCache.Contains(ctx, id)
@@ -19,6 +19,9 @@ func (o *OrderService) GetById(ctx context.Context, id string) (domainOrder.Orde
 	}
 	order, err := o.RepoDB.Get(id)
 	if err != nil {
+		if errors.Is(err, db.ErrRecordNotFound) {
+			return domainOrder.Order{}, ErrOrderNotFound
+		}
 		return domainOrder.Order{}, err
 	}
 	if err = o.RepoCache.Set(ctx, order.OrderUID, order); err != nil {

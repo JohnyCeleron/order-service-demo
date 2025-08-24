@@ -57,14 +57,14 @@ func (a *Application) Close() {
 
 	log.Println("Stop Kafka")
 	if err := a.consumer.Close(); err != nil {
-		log.Println("Ошибка при закрытии consumer: ", err)
+		log.Println("Stop consumer error: ", err)
 	}
 	log.Println("Stop DataBase")
 	if err := a.serviceOrder.RepoDB.Close(); err != nil {
-		log.Println("Ошибка при закрытии базы данных: ", err)
+		log.Println("Stop database error: ", err)
 	}
 	log.Println("Stop Cache")
 	if err := a.serviceOrder.RepoCache.Close(); err != nil {
-		log.Println("Ошибка при закрытии кэша: ", err)
+		log.Println("Stop cache error: ", err)
 	}
 }

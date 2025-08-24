@@ -8,6 +8,7 @@ import (
 
 	domainOrder "order-service/internal/domain/order"
 	"order-service/internal/repository/converter"
+	"order-service/internal/repository/db"
 	"order-service/internal/repository/model"
 )
 
@@ -71,7 +72,7 @@ func (storage *PostgresOrder) Get(id string) (domainOrder.Order, error) {
 		First(&order).Error; err != nil {
 		tx.Rollback()
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return domainOrder.Order{}, fmt.Errorf("order with id %s not found", id)
+			return domainOrder.Order{}, db.ErrRecordNotFound
 		}
 		return domainOrder.Order{}, fmt.Errorf("failed to get order: %v", err)
 	}
@@ -91,6 +92,9 @@ func (storage *PostgresOrder) Add(order domainOrder.Order) error {
 
 	if err := tx.Create(&modelOrder).Error; err != nil {
 		tx.Rollback()
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return db.ErrExistsKey
+		}
 		return err
 	}
 	return tx.Commit().Error

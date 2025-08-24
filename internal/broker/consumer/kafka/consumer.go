@@ -3,6 +3,7 @@ package kafka
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
 	domainOrder "order-service/internal/domain/order"
+	"order-service/internal/repository/db"
 )
 
 const (
@@ -80,6 +82,9 @@ func (c *Consumer) Run(ctx context.Context) {
 			}
 
 			if err := c.messageHandler.HandleMessage(ctx, order); err != nil {
+				if errors.Is(err, db.ErrExistsKey) {
+					log.Printf("order with uid (%v) exists", order.OrderUID)
+				}
 				log.Printf("handle message error: %v\n")
 			}
 			if _, err := c.reader.CommitMessage(msg); err != nil {
