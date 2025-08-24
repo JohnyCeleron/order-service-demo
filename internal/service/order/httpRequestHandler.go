@@ -3,9 +3,10 @@ package order
 import (
 	"context"
 	"errors"
-	"log"
 
+	"order-service/internal/app/logger"
 	domainOrder "order-service/internal/domain/order"
+	"order-service/internal/lib/logger/sl"
 	"order-service/internal/repository/db"
 )
 
@@ -25,7 +26,7 @@ func (o *OrderService) GetById(ctx context.Context, id string) (domainOrder.Orde
 		return domainOrder.Order{}, err
 	}
 	if err = o.RepoCache.Set(ctx, order.OrderUID, order); err != nil {
-		log.Println("Ошибка добавления заказа в кэш: ", err)
+		logger.Logger.Error("error order adding in cache: ", sl.Err(err))
 	}
 	return order, nil
 }

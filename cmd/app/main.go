@@ -17,7 +17,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := application.Run(); err != nil {
-		log.Fatal("Error running application: ", err)
-	}
+	application.Run()
 }

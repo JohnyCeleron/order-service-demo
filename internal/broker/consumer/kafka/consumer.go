@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
+	"order-service/internal/app/logger"
 	domainOrder "order-service/internal/domain/order"
+	"order-service/internal/lib/logger/sl"
 	"order-service/internal/repository/db"
 )
 
@@ -51,6 +53,8 @@ func New(messageHandler MessageHandler) (*Consumer, error) {
 }
 
 func (c *Consumer) Run(ctx context.Context) {
+	logger.Logger.Info("consumer runs")
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -61,21 +65,21 @@ func (c *Consumer) Run(ctx context.Context) {
 				if kafkaErr, ok := err.(kafka.Error); ok && kafkaErr.Code() == kafka.ErrTimedOut {
 					continue
 				}
-				log.Printf("error reading from broker: %v\n", err)
+				logger.Logger.Warn("consumer reading warning: ", sl.Err(err))
 				continue
 			}
 
 			var order domainOrder.Order
 			if err = json.Unmarshal(msg.Value, &order); err != nil {
 				if dlqErr := c.sendToDLQ(ctx, msg, fmt.Errorf("unmarshal: %w", err)); dlqErr != nil {
-					log.Printf("dlq error: %v\n", dlqErr)
+					logger.Logger.Error("dlq error: ", sl.Err(dlqErr))
 				}
 				c.reader.CommitMessage(msg)
 				continue
 			}
 			if valid, err := order.Validate(); !valid {
 				if dlqErr := c.sendToDLQ(ctx, msg, fmt.Errorf("validate: %w", err)); dlqErr != nil {
-					log.Printf("dlq error: %v\n", dlqErr)
+					logger.Logger.Error("dlq error: ", sl.Err(dlqErr))
 				}
 				c.reader.CommitMessage(msg)
 				continue
@@ -83,12 +87,12 @@ func (c *Consumer) Run(ctx context.Context) {
 
 			if err := c.messageHandler.HandleMessage(ctx, order); err != nil {
 				if errors.Is(err, db.ErrExistsKey) {
-					log.Printf("order with uid (%v) exists", order.OrderUID)
+					logger.Logger.Error("order exists", slog.String("uid", order.OrderUID))
 				}
-				log.Printf("handle message error: %v\n")
+				logger.Logger.Error("handle message error: ", sl.Err(err))
 			}
 			if _, err := c.reader.CommitMessage(msg); err != nil {
-				log.Printf("commit warn: %v", err)
+				logger.Logger.Warn("commit warn: ", sl.Err(err))
 			}
 		}
 	}

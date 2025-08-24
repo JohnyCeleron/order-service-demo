@@ -2,11 +2,14 @@ package app
 
 import (
 	"context"
-	"log"
+	"log/slog"
+	"os"
 	"os/signal"
 	"syscall"
 
+	"order-service/internal/app/logger"
 	"order-service/internal/broker/consumer/kafka"
+	"order-service/internal/lib/logger/sl"
 	"order-service/internal/repository/cache/redis"
 	"order-service/internal/repository/db/postgres"
 	"order-service/internal/service/order"
@@ -17,9 +20,9 @@ type Application struct {
 	consumer     *kafka.Consumer
 }
 
-const messageBuffer int = 4
-
 func New() (*Application, error) {
+	logger.SetupLogger(os.Getenv("ENVIRONMENT"))
+
 	repoOrderDB, err := postgres.New()
 	if err != nil {
 		return &Application{}, err
@@ -40,7 +43,12 @@ func New() (*Application, error) {
 	}, nil
 }
 
-func (a *Application) Run() error {
+func (a *Application) Run() {
+	logger.Logger.Info(
+		"running order service",
+		slog.String("env", os.Getenv("ENVIRONMENT")),
+	)
+
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 	a.serviceOrder.PreLoad(ctx)
@@ -49,22 +57,21 @@ func (a *Application) Run() error {
 
 	<-ctx.Done()
 	a.Close()
-	return nil
 }
 
 func (a *Application) Close() {
-	log.Println("Gracefull Shutdown")
+	logger.Logger.Info("Gracefull shutdown")
 
-	log.Println("Stop Kafka")
+	logger.Logger.Info("Stop Kafka")
 	if err := a.consumer.Close(); err != nil {
-		log.Println("Stop consumer error: ", err)
+		logger.Logger.Error("Stop consumer error: ", sl.Err(err))
 	}
-	log.Println("Stop DataBase")
+	logger.Logger.Info("Stop DataBase")
 	if err := a.serviceOrder.RepoDB.Close(); err != nil {
-		log.Println("Stop database error: ", err)
+		logger.Logger.Error("Stop database error: ", sl.Err(err))
 	}
-	log.Println("Stop Cache")
+	logger.Logger.Info("Stop Cache")
 	if err := a.serviceOrder.RepoCache.Close(); err != nil {
-		log.Println("Stop cache error: ", err)
+		logger.Logger.Error("Stop cache error: ", sl.Err(err))
 	}
 }
