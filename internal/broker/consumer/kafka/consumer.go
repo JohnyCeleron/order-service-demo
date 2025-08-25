@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	readingMessageTimeout time.Duration = 2 * time.Second
+	readingMessageTimeout time.Duration = 5 * time.Second
 	timeoutFlushMs        int           = 10 * 1000
 )
 
@@ -61,6 +61,9 @@ func (c *Consumer) Run(ctx context.Context) {
 			return
 		default:
 			msg, err := c.reader.ReadMessage(readingMessageTimeout)
+			if msg == nil {
+				continue
+			}
 			if err != nil {
 				if kafkaErr, ok := err.(kafka.Error); ok && kafkaErr.Code() == kafka.ErrTimedOut {
 					continue
@@ -78,13 +81,13 @@ func (c *Consumer) Run(ctx context.Context) {
 				continue
 			}
 			if valid, err := order.Validate(); !valid {
+				logger.Logger.Error("error validation: ", sl.Err(err))
 				if dlqErr := c.sendToDLQ(ctx, msg, fmt.Errorf("validate: %w", err)); dlqErr != nil {
 					logger.Logger.Error("dlq error: ", sl.Err(dlqErr))
 				}
 				c.reader.CommitMessage(msg)
 				continue
 			}
-
 			if err := c.messageHandler.HandleMessage(ctx, order); err != nil {
 				if errors.Is(err, db.ErrExistsKey) {
 					logger.Logger.Error("order exists", slog.String("uid", order.OrderUID))

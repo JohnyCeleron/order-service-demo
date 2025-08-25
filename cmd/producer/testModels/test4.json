@@ -1,0 +1,75 @@
+{
+   "order_uid": "test9876543210zyx",
+   "track_number": "US987654321",
+   "entry": "WBUS",
+   "delivery": {
+      "name": "John Smith",
+      "phone": "+12125551212",
+      "zip": "10001",
+      "city": "New York",
+      "address": "5th Avenue 100",
+      "region": "NY",
+      "email": "john.smith@example.com"
+   },
+   "payment": {
+      "transaction": "test9876543210zyx",
+      "request_id": "req_us_789",
+      "currency": "USD",
+      "provider": "stripe",
+      "amount": 15650,
+      "payment_dt": 1677628800,
+      "bank": "chase",
+      "delivery_cost": 1200,
+      "goods_total": 14450,
+      "custom_fee": 0
+   },
+   "items": [
+      {
+         "chrt_id": 1122334,
+         "track_number": "US987654321",
+         "price": 5000,
+         "rid": "rid_us_item1_abc",
+         "name": "Laptop Bag",
+         "sale": 20,
+         "size": "0",
+         "total_price": 4000,
+         "nm_id": 9988776,
+         "brand": "Dell",
+         "status": 200
+      },
+      {
+         "chrt_id": 2233445,
+         "track_number": "US987654321",
+         "price": 3500,
+         "rid": "rid_us_item2_def",
+         "name": "Wireless Mouse",
+         "sale": 2,
+         "size": "0",
+         "total_price": 3500,
+         "nm_id": 8877665,
+         "brand": "Logitech",
+         "status": 200
+      },
+      {
+         "chrt_id": 3344556,
+         "track_number": "US987654321",
+         "price": 7500,
+         "rid": "rid_us_item3_ghi",
+         "name": "Monitor",
+         "sale": 10,
+         "size": "0",
+         "total_price": 6750,
+         "nm_id": 7766554,
+         "brand": "LG",
+         "status": 202
+      }
+   ],
+   "locale": "en",
+   "internal_signature": "",
+   "customer_id": "us_customer_456",
+   "delivery_service": "fedex",
+   "shardkey": "3",
+   "sm_id": 77,
+   "date_created": "2023-03-01T16:45:00Z",
+   "oof_shard": "1"
+}

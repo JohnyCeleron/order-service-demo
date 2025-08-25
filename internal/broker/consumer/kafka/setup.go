@@ -13,6 +13,7 @@ func SetupKafkaConsumer() (*kafka.Consumer, error) {
 		"group.id":           os.Getenv("KAFKA_GROUP_ID"),
 		"enable.auto.commit": false,
 		"auto.offset.reset":  "earliest",
+		//"debug":              "consumer,cgrp,topic,fetch",
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create consumer: %w", err)

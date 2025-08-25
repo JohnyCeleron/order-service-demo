@@ -1,0 +1,62 @@
+{
+   "order_uid": "verybadcontact002",
+   "track_number": "BADCONTACT002",
+   "entry": "WBUS",
+   "delivery": {
+      "name": "John Doe",
+      "phone": "+123456+32423",
+      "zip": "90210",
+      "city": "Los Angeles",
+      "address": "Sunset Blvd 123",
+      "region": "CA",
+      "email": "john@doe.com"
+   },
+   "payment": {
+      "transaction": "verybadcontact002",
+      "request_id": "req_bad_002",
+      "currency": "USD",
+      "provider": "stripe",
+      "amount": 15000,
+      "payment_dt": 1675209600,
+      "bank": "bankofamerica",
+      "delivery_cost": 1000,
+      "goods_total": 14000,
+      "custom_fee": 0
+   },
+   "items": [
+      {
+         "chrt_id": 2222222,
+         "track_number": "BADCONTACT002",
+         "price": 8000,
+         "rid": "rid_verybad_002",
+         "name": "Gaming Console",
+         "sale": 0,
+         "size": "0",
+         "total_price": 8000,
+         "nm_id": 8887776,
+         "brand": "Sony",
+         "status": 200
+      },
+      {
+         "chrt_id": 3333333,
+         "track_number": "BADCONTACT002",
+         "price": 6000,
+         "rid": "rid_verybad_003",
+         "name": "Game Controller",
+         "sale": 0,
+         "size": "0",
+         "total_price": 6000,
+         "nm_id": 7776665,
+         "brand": "Sony",
+         "status": 200
+      }
+   ],
+   "locale": "en",
+   "internal_signature": "",
+   "customer_id": "very_bad_contact",
+   "delivery_service": "ups",
+   "shardkey": "4",
+   "sm_id": 88,
+   "date_created": "2023-02-15T18:30:00Z",
+   "oof_shard": "2"
+}

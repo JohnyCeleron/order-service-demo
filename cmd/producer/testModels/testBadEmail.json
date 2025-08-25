@@ -1,0 +1,49 @@
+{
+   "order_uid": "badcontact001xyz",
+   "track_number": "INVALIDCONTACT",
+   "entry": "WBIL",
+   "delivery": {
+      "name": "Test User",
+      "phone": "+79822222222",
+      "zip": "123456",
+      "city": "Moscow",
+      "address": "Lenina st 1",
+      "region": "Moscow Oblast",
+      "email": "invalid-email"
+   },
+   "payment": {
+      "transaction": "badcontact001xyz",
+      "request_id": "",
+      "currency": "RUB",
+      "provider": "wbpay",
+      "amount": 2000,
+      "payment_dt": 1672531200,
+      "bank": "sberbank",
+      "delivery_cost": 300,
+      "goods_total": 1700,
+      "custom_fee": 0
+   },
+   "items": [
+      {
+         "chrt_id": 1111111,
+         "track_number": "INVALIDCONTACT",
+         "price": 1700,
+         "rid": "rid_badcontact001",
+         "name": "Test Product",
+         "sale": 0,
+         "size": "M",
+         "total_price": 1700,
+         "nm_id": 9998887,
+         "brand": "Test Brand",
+         "status": 202
+      }
+   ],
+   "locale": "ru",
+   "internal_signature": "",
+   "customer_id": "bad_contact_user",
+   "delivery_service": "pochta",
+   "shardkey": "2",
+   "sm_id": 55,
+   "date_created": "2023-01-10T12:00:00Z",
+   "oof_shard": "1"
+}

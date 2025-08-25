@@ -1,0 +1,62 @@
+{
+   "order_uid": "a1b2c3d4e5f67890test",
+   "track_number": "TRACK001XYZ",
+   "entry": "WBIL",
+   "delivery": {
+      "name": "Ivan Ivanov",
+      "phone": "+79161234567",
+      "zip": "101000",
+      "city": "Moscow",
+      "address": "Tverskaya st 10",
+      "region": "Moscow Oblast",
+      "email": "ivanov@mail.ru"
+   },
+   "payment": {
+      "transaction": "a1b2c3d4e5f67890test",
+      "request_id": "req_12345",
+      "currency": "RUB",
+      "provider": "yandexpay",
+      "amount": 5400,
+      "payment_dt": 1672531200,
+      "bank": "sberbank",
+      "delivery_cost": 500,
+      "goods_total": 4900,
+      "custom_fee": 0
+   },
+   "items": [
+      {
+         "chrt_id": 1234567,
+         "track_number": "TRACK001XYZ",
+         "price": 2500,
+         "rid": "rid_abcdef123456",
+         "name": "Winter Jacket",
+         "sale": 10,
+         "size": "M",
+         "total_price": 2250,
+         "nm_id": 7654321,
+         "brand": "ZARA",
+         "status": 200
+      },
+      {
+         "chrt_id": 7654321,
+         "track_number": "TRACK001XYZ",
+         "price": 3000,
+         "rid": "rid_zyx987654",
+         "name": "Jeans",
+         "sale": 15,
+         "size": "L",
+         "total_price": 2550,
+         "nm_id": 1239874,
+         "brand": "Levi's",
+         "status": 200
+      }
+   ],
+   "locale": "ru",
+   "internal_signature": "",
+   "customer_id": "customer123",
+   "delivery_service": "cdek",
+   "shardkey": "5",
+   "sm_id": 42,
+   "date_created": "2023-01-15T14:30:00Z",
+   "oof_shard": "2"
+}
