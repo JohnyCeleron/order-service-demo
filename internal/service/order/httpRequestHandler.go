@@ -15,9 +15,11 @@ func (o *OrderService) GetById(ctx context.Context, id string) (domainOrder.Orde
 	if orderInCache {
 		order, err := o.RepoCache.Get(ctx, id)
 		if err == nil {
+			logger.Logger.Debug("данные получены из кэша")
 			return order, nil
 		}
 	}
+	logger.Logger.Debug("получение id из бд")
 	order, err := o.RepoDB.Get(id)
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -25,6 +27,7 @@ func (o *OrderService) GetById(ctx context.Context, id string) (domainOrder.Orde
 		}
 		return domainOrder.Order{}, err
 	}
+	logger.Logger.Debug("устанавливаем данные в кэш")
 	if err = o.RepoCache.Set(ctx, order.OrderUID, order); err != nil {
 		logger.Logger.Error("error order adding in cache: ", sl.Err(err))
 	}

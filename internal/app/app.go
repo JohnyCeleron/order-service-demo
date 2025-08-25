@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,6 +19,7 @@ import (
 type Application struct {
 	serviceOrder *order.OrderService
 	consumer     *kafka.Consumer
+	srv          *http.Server
 }
 
 func New() (*Application, error) {
@@ -36,21 +38,22 @@ func New() (*Application, error) {
 	if err != nil {
 		return &Application{}, err
 	}
-
+	srv := setupServer(serviceOrder)
 	return &Application{
 		serviceOrder: serviceOrder,
 		consumer:     consumer,
+		srv:          srv,
 	}, nil
 }
 
 func (a *Application) Run() {
 	logger.Logger.Info(
-		"running order service",
+		"running application",
 		slog.String("env", os.Getenv("ENVIRONMENT")),
 	)
-
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+	go a.runServer()
 	a.serviceOrder.PreLoad(ctx)
 
 	go a.consumer.Run(ctx)
@@ -61,7 +64,10 @@ func (a *Application) Run() {
 
 func (a *Application) Close() {
 	logger.Logger.Info("Gracefull shutdown")
-
+	logger.Logger.Info("Stop Server")
+	if err := a.shutdownServer(); err != nil {
+		logger.Logger.Error("Stop server error: ", sl.Err(err))
+	}
 	logger.Logger.Info("Stop Kafka")
 	if err := a.consumer.Close(); err != nil {
 		logger.Logger.Error("Stop consumer error: ", sl.Err(err))

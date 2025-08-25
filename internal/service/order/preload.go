@@ -10,11 +10,13 @@ import (
 func (o *OrderService) PreLoad(ctx context.Context) {
 	logger.Logger.Info("start preload")
 	orders, err := o.RepoDB.GetAll()
+	logger.Logger.Debug("Получение всех orders")
 	if err != nil {
 		logger.Logger.Error("preload: error getting all records from database: ", sl.Err(err))
 		return
 	}
 	for _, order := range orders {
+		logger.Logger.Debug("Кэширование orders")
 		if err = o.RepoCache.Set(ctx, order.OrderUID, order); err != nil {
 			logger.Logger.Error("preload: error writing order %v in cache: ", order.OrderUID, sl.Err(err))
 			continue
