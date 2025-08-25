@@ -1,0 +1,292 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/order/{order_uid}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Получить заказ по UID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "b563feb7b2b84b6test",
+                        "description": "UID заказа",
+                        "name": "order_uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order-service_internal_controllers_response.OrderResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/order-service_internal_controllers_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/order-service_internal_controllers_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "order-service_internal_controllers_response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "order-service_internal_controllers_response.OrderResponse": {
+            "type": "object",
+            "required": [
+                "customer_id",
+                "date_created",
+                "delivery",
+                "delivery_service",
+                "entry",
+                "items",
+                "locale",
+                "oof_shard",
+                "order_uid",
+                "payment",
+                "shardkey",
+                "sm_id",
+                "track_number"
+            ],
+            "properties": {
+                "customer_id": {
+                    "type": "string",
+                    "example": "test"
+                },
+                "date_created": {
+                    "type": "string",
+                    "example": "2021-11-26T06:22:19Z"
+                },
+                "delivery": {
+                    "$ref": "#/definitions/order-service_internal_domain_delivery.Delivery"
+                },
+                "delivery_service": {
+                    "type": "string",
+                    "example": "meest"
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "WBIL"
+                },
+                "internal_signature": {
+                    "type": "string",
+                    "example": ""
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/order-service_internal_domain_orderItem.OrderItem"
+                    }
+                },
+                "locale": {
+                    "type": "string",
+                    "example": "en"
+                },
+                "oof_shard": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "order_uid": {
+                    "type": "string",
+                    "example": "b563feb7b2b84b6test"
+                },
+                "payment": {
+                    "$ref": "#/definitions/order-service_internal_domain_payment.Payment"
+                },
+                "shardkey": {
+                    "type": "string",
+                    "example": "9"
+                },
+                "sm_id": {
+                    "type": "integer",
+                    "example": 99
+                },
+                "track_number": {
+                    "type": "string",
+                    "example": "WBILMTESTTRACK"
+                }
+            }
+        },
+        "order-service_internal_domain_delivery.Delivery": {
+            "type": "object",
+            "required": [
+                "address",
+                "city",
+                "email",
+                "name",
+                "phone",
+                "region",
+                "zip"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "Ploshad Mira 15"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "Kiryat Mozkin"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "test@gmail.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Test Testov"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+9720000000"
+                },
+                "region": {
+                    "type": "string",
+                    "example": "Kraiot"
+                },
+                "zip": {
+                    "type": "string",
+                    "example": "2639809"
+                }
+            }
+        },
+        "order-service_internal_domain_orderItem.OrderItem": {
+            "type": "object",
+            "required": [
+                "brand",
+                "chrt_id",
+                "name",
+                "nm_id",
+                "price",
+                "rid",
+                "sale",
+                "size",
+                "status",
+                "total_price",
+                "track_number"
+            ],
+            "properties": {
+                "brand": {
+                    "type": "string",
+                    "example": "Vivienne Sabo"
+                },
+                "chrt_id": {
+                    "type": "integer",
+                    "example": 9934930
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Mascaras"
+                },
+                "nm_id": {
+                    "type": "integer",
+                    "example": 2389212
+                },
+                "price": {
+                    "type": "integer",
+                    "example": 453
+                },
+                "rid": {
+                    "type": "string",
+                    "example": "ab4219087a764ae0btest"
+                },
+                "sale": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "size": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "total_price": {
+                    "type": "integer",
+                    "example": 317
+                },
+                "track_number": {
+                    "type": "string",
+                    "example": "WBILMTESTTRACK"
+                }
+            }
+        },
+        "order-service_internal_domain_payment.Payment": {
+            "type": "object",
+            "required": [
+                "bank",
+                "currency",
+                "payment_dt",
+                "provider",
+                "transaction"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 1817
+                },
+                "bank": {
+                    "type": "string",
+                    "example": "alpha"
+                },
+                "currency": {
+                    "type": "string",
+                    "example": "USD"
+                },
+                "custom_fee": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 0
+                },
+                "delivery_cost": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1500
+                },
+                "goods_total": {
+                    "type": "integer",
+                    "example": 317
+                },
+                "payment_dt": {
+                    "type": "integer",
+                    "example": 1637907727
+                },
+                "provider": {
+                    "type": "string",
+                    "example": "wbpay"
+                },
+                "request_id": {
+                    "type": "string",
+                    "example": ""
+                },
+                "transaction": {
+                    "type": "string",
+                    "example": "b563feb7b2b84b6test"
+                }
+            }
+        }
+    }
+}

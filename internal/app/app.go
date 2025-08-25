@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "order-service/docs"
 	"order-service/internal/app/logger"
 	"order-service/internal/broker/consumer/kafka"
 	"order-service/internal/lib/logger/sl"

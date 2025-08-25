@@ -1,0 +1,215 @@
+definitions:
+  order-service_internal_controllers_response.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  order-service_internal_controllers_response.OrderResponse:
+    properties:
+      customer_id:
+        example: test
+        type: string
+      date_created:
+        example: "2021-11-26T06:22:19Z"
+        type: string
+      delivery:
+        $ref: '#/definitions/order-service_internal_domain_delivery.Delivery'
+      delivery_service:
+        example: meest
+        type: string
+      entry:
+        example: WBIL
+        type: string
+      internal_signature:
+        example: ""
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/order-service_internal_domain_orderItem.OrderItem'
+        type: array
+      locale:
+        example: en
+        type: string
+      oof_shard:
+        example: "1"
+        type: string
+      order_uid:
+        example: b563feb7b2b84b6test
+        type: string
+      payment:
+        $ref: '#/definitions/order-service_internal_domain_payment.Payment'
+      shardkey:
+        example: "9"
+        type: string
+      sm_id:
+        example: 99
+        type: integer
+      track_number:
+        example: WBILMTESTTRACK
+        type: string
+    required:
+    - customer_id
+    - date_created
+    - delivery
+    - delivery_service
+    - entry
+    - items
+    - locale
+    - oof_shard
+    - order_uid
+    - payment
+    - shardkey
+    - sm_id
+    - track_number
+    type: object
+  order-service_internal_domain_delivery.Delivery:
+    properties:
+      address:
+        example: Ploshad Mira 15
+        type: string
+      city:
+        example: Kiryat Mozkin
+        type: string
+      email:
+        example: test@gmail.com
+        type: string
+      name:
+        example: Test Testov
+        type: string
+      phone:
+        example: "+9720000000"
+        type: string
+      region:
+        example: Kraiot
+        type: string
+      zip:
+        example: "2639809"
+        type: string
+    required:
+    - address
+    - city
+    - email
+    - name
+    - phone
+    - region
+    - zip
+    type: object
+  order-service_internal_domain_orderItem.OrderItem:
+    properties:
+      brand:
+        example: Vivienne Sabo
+        type: string
+      chrt_id:
+        example: 9934930
+        type: integer
+      name:
+        example: Mascaras
+        type: string
+      nm_id:
+        example: 2389212
+        type: integer
+      price:
+        example: 453
+        type: integer
+      rid:
+        example: ab4219087a764ae0btest
+        type: string
+      sale:
+        example: 30
+        type: integer
+      size:
+        example: "0"
+        type: string
+      status:
+        type: integer
+      total_price:
+        example: 317
+        type: integer
+      track_number:
+        example: WBILMTESTTRACK
+        type: string
+    required:
+    - brand
+    - chrt_id
+    - name
+    - nm_id
+    - price
+    - rid
+    - sale
+    - size
+    - status
+    - total_price
+    - track_number
+    type: object
+  order-service_internal_domain_payment.Payment:
+    properties:
+      amount:
+        example: 1817
+        type: integer
+      bank:
+        example: alpha
+        type: string
+      currency:
+        example: USD
+        type: string
+      custom_fee:
+        example: 0
+        minimum: 0
+        type: integer
+      delivery_cost:
+        example: 1500
+        minimum: 0
+        type: integer
+      goods_total:
+        example: 317
+        type: integer
+      payment_dt:
+        example: 1637907727
+        type: integer
+      provider:
+        example: wbpay
+        type: string
+      request_id:
+        example: ""
+        type: string
+      transaction:
+        example: b563feb7b2b84b6test
+        type: string
+    required:
+    - bank
+    - currency
+    - payment_dt
+    - provider
+    - transaction
+    type: object
+info:
+  contact: {}
+paths:
+  /order/{order_uid}:
+    get:
+      parameters:
+      - description: UID заказа
+        example: b563feb7b2b84b6test
+        in: path
+        name: order_uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/order-service_internal_controllers_response.OrderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/order-service_internal_controllers_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/order-service_internal_controllers_response.ErrorResponse'
+      summary: Получить заказ по UID
+      tags:
+      - order
+swagger: "2.0"

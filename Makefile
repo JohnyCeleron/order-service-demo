@@ -40,6 +40,8 @@ migrate-create:
 # Полный сброс (откат всех миграций) - опасно!
 migrate-reset:
 	goose -dir $(MIGRATIONS_DIR) postgres $(DSN) reset
+swagger:
+	swag init -g cmd/app/main.go -o ./docs --parseDependency --parseInternal
 
 # Подключиться к БД через psql
 db-connect:

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"order-service/internal/app/logger"
 	"order-service/internal/controllers/handler"
@@ -26,6 +27,7 @@ func setupServer(service *order.OrderService) *http.Server {
 	r.Route("/order", func(r chi.Router) {
 		r.Get("/{order_uid}", handler.GetOrder)
 	})
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 	return &http.Server{
 		Addr:         ":8081",
 		Handler:      r,
