@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"order-service/internal/app/logger"
@@ -24,6 +25,13 @@ const (
 func setupServer(service *order.OrderService) *http.Server {
 	r := chi.NewRouter()
 	handler := handler.New(service)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"https://*", "http://*", "null"},
+		AllowedMethods: []string{"GET"},
+		AllowedHeaders: []string{"Accept", "Content-Type"},
+		MaxAge:         300,
+	}))
+
 	r.Route("/order", func(r chi.Router) {
 		r.Get("/{order_uid}", handler.GetOrder)
 	})

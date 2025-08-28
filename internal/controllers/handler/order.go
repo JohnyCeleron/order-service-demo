@@ -33,7 +33,7 @@ func (h *HttpHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, o.ErrOrderNotFound) {
 			writeJSON(w, http.StatusNotFound,
-				response.NewErrorResponse(fmt.Sprintf("order with uid %v not found", uid)))
+				response.NewErrorResponse(fmt.Sprintf("order with id %v not found", uid)))
 			return
 		}
 		writeJSON(w, http.StatusInternalServerError,
