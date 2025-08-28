@@ -9,11 +9,17 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+
+	"order-service/internal/configs"
 )
 
+var kafkaCfg *configs.KafkaConfig
+
 func main() {
+	kafkaCfg = configs.NewKafkaConfig()
+
 	config := &kafka.ConfigMap{
-		"bootstrap.servers": os.Getenv("KAFKA_BOOTSTRAP_SERVERS"),
+		"bootstrap.servers": kafkaCfg.BootstrapServers,
 	}
 	producer, err := kafka.NewProducer(config)
 	if err != nil {
@@ -21,7 +27,7 @@ func main() {
 	}
 	defer producer.Close()
 	fmt.Println("producer создан и подключен к Kafka")
-	topic := os.Getenv("KAFKA_PRODUCER_TOPIC")
+	topic := kafkaCfg.ProducerTopic
 	dirPath := filepath.Join("cmd", "producer", "testModels")
 	if err := CreateTopic(topic); err != nil {
 		log.Fatalf("ошибка при создании топика: %v", err)
@@ -82,7 +88,7 @@ func sendJSONFile(producer *kafka.Producer, topic, filePath string) error {
 func CreateTopic(topic string) error {
 	log.Println("topic creation")
 	admin, err := kafka.NewAdminClient(&kafka.ConfigMap{
-		"bootstrap.servers": os.Getenv("KAFKA_BOOTSTRAP_SERVERS"),
+		"bootstrap.servers": kafkaCfg.BootstrapServers,
 	})
 	if err != nil {
 		log.Println("kafka admin client creation error: ", err)

@@ -2,23 +2,25 @@ package postgres
 
 import (
 	"fmt"
-	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"order-service/internal/configs"
 	"order-service/internal/repository/model"
 )
 
 func SetupPostgres() (*gorm.DB, error) {
+	cfg := configs.NewPostgresConfig()
+
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v",
-		os.Getenv("DB_HOST"),
-		os.Getenv("APP_DB_USER"),
-		os.Getenv("APP_DB_PASSWORD"),
-		os.Getenv("APP_DB_NAME"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_SSLMODE"),
+		cfg.HostDB,
+		cfg.UserAppDB,
+		cfg.PasswordAppDB,
+		cfg.NameAppDB,
+		cfg.PortDB,
+		cfg.SSLModeDB,
 	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),

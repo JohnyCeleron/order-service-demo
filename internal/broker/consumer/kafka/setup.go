@@ -2,15 +2,17 @@ package kafka
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+
+	"order-service/internal/configs"
 )
 
 func SetupKafkaConsumer() (*kafka.Consumer, error) {
+	cfg := configs.NewKafkaConfig()
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":  os.Getenv("KAFKA_BOOTSTRAP_SERVERS"),
-		"group.id":           os.Getenv("KAFKA_GROUP_ID"),
+		"bootstrap.servers":  cfg.BootstrapServers,
+		"group.id":           cfg.GroupId,
 		"enable.auto.commit": false,
 		"auto.offset.reset":  "earliest",
 		//"debug":              "consumer,cgrp,topic,fetch",
@@ -19,7 +21,7 @@ func SetupKafkaConsumer() (*kafka.Consumer, error) {
 		return nil, fmt.Errorf("failed to create consumer: %w", err)
 	}
 
-	err = consumer.Subscribe(os.Getenv("KAFKA_CONSUMER_TOPIC"), nil)
+	err = consumer.Subscribe(cfg.ConsumerTopic, nil)
 	if err != nil {
 		consumer.Close()
 		return nil, fmt.Errorf("failed to subscribe to topic: %w", err)

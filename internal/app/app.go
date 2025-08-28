@@ -4,13 +4,13 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
-	"os"
 	"os/signal"
 	"syscall"
 
 	_ "order-service/docs"
 	"order-service/internal/app/logger"
 	"order-service/internal/broker/consumer/kafka"
+	"order-service/internal/configs"
 	"order-service/internal/lib/logger/sl"
 	"order-service/internal/repository/cache/redis"
 	"order-service/internal/repository/db/postgres"
@@ -24,7 +24,8 @@ type Application struct {
 }
 
 func New() (*Application, error) {
-	logger.SetupLogger(os.Getenv("ENVIRONMENT"))
+	cfg := configs.NewEnvironmentConfig()
+	logger.SetupLogger(cfg.Environment)
 
 	repoOrderDB, err := postgres.New()
 	if err != nil {
@@ -48,9 +49,10 @@ func New() (*Application, error) {
 }
 
 func (a *Application) Run() {
+	cfg := configs.NewEnvironmentConfig()
 	logger.Logger.Info(
 		"running application",
-		slog.String("env", os.Getenv("ENVIRONMENT")),
+		slog.String("env", cfg.Environment),
 	)
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
