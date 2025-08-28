@@ -1,0 +1,101 @@
+{
+  "order_uid": "d3e4f5a6b7c8d9e0rand",
+  "track_number": "IT345678901",
+  "entry": "WBIT",
+  "delivery": {
+    "name": "Marco Rossi",
+    "phone": "+390612345678",
+    "zip": "00187",
+    "city": "Roma",
+    "address": "Via del Corso 123",
+    "region": "Lazio",
+    "email": "marco.rossi@libero.it"
+  },
+  "payment": {
+    "transaction": "d3e4f5a6b7c8d9e0rand",
+    "request_id": "req_5566778899",
+    "currency": "EUR",
+    "provider": "unicredit",
+    "amount": 287500,
+    "payment_dt": 1685577600,
+    "bank": "intesa-sanpaolo",
+    "delivery_cost": 3500,
+    "goods_total": 284000,
+    "custom_fee": 0
+  },
+  "items": [
+    {
+      "chrt_id": 11223344,
+      "track_number": "IT345678901",
+      "price": 189900,
+      "rid": "rid_it345678rand",
+      "name": "Schermo 4K 55\"",
+      "sale": 20,
+      "size": "0",
+      "total_price": 151920,
+      "nm_id": 55667788,
+      "brand": "Samsung",
+      "status": 202
+    },
+    {
+      "chrt_id": 22334455,
+      "track_number": "IT345678901",
+      "price": 79900,
+      "rid": "rid_it345679rand",
+      "name": "Soundbar Dolby Atmos",
+      "sale": 15,
+      "size": "0",
+      "total_price": 67915,
+      "nm_id": 66778899,
+      "brand": "LG",
+      "status": 200
+    },
+    {
+      "chrt_id": 33445566,
+      "track_number": "IT345678901",
+      "price": 14200,
+      "rid": "rid_it345680rand",
+      "name": "Apple TV 4K",
+      "sale": 1,
+      "size": "0",
+      "total_price": 14200,
+      "nm_id": 77889900,
+      "brand": "Apple",
+      "status": 200
+    },
+    {
+      "chrt_id": 44556677,
+      "track_number": "IT345678901",
+      "price": 8900,
+      "rid": "rid_it345681rand",
+      "name": "Cavi HDMI Premium",
+      "sale": 30,
+      "size": "0",
+      "total_price": 6230,
+      "nm_id": 88990011,
+      "brand": "Belkin",
+      "status": 200
+    },
+    {
+      "chrt_id": 55667788,
+      "track_number": "IT345678901",
+      "price": 11100,
+      "rid": "rid_it345682rand",
+      "name": "Supporto TV a Parete",
+      "sale": 10,
+      "size": "0",
+      "total_price": 9990,
+      "nm_id": 99001122,
+      "brand": "Vogel's",
+      "status": 200
+    }
+  ],
+  "locale": "it",
+  "internal_signature": "signature_13579",
+  "customer_id": "italian_cinema_lover",
+  "delivery_service": "brt",
+  "shardkey": "2",
+  "sm_id": 567,
+  "date_created": "2023-06-01T18:20:15+02:00",
+  "oof_shard": "1"
+}

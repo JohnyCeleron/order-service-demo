@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Order struct {
-	ID                string    `gorm:"type:varchar(100);primaryKey"`
+	ID                string    `gorm:"type:varchar(100);primaryKey;index"`
 	TrackNumber       string    `gorm:"type:varchar(50);not null"`
 	Entry             string    `gorm:"type:varchar(50);not null"`
 	Locale            string    `gorm:"type:varchar(10);not null"`

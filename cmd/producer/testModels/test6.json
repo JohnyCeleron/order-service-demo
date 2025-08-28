@@ -1,0 +1,75 @@
+{
+  "order_uid": "b6c7d8e9f0a1b2c3rand",
+  "track_number": "US456789123",
+  "entry": "WBIL",
+  "delivery": {
+    "name": "John Smith",
+    "phone": "+12125551234",
+    "zip": "10001",
+    "city": "New York",
+    "address": "Broadway 123, floor 5",
+    "region": "NY",
+    "email": "john.smith@gmail.com"
+  },
+  "payment": {
+    "transaction": "b6c7d8e9f0a1b2c3rand",
+    "request_id": "req_1122334455",
+    "currency": "USD",
+    "provider": "stripe",
+    "amount": 45650,
+    "payment_dt": 1681516800,
+    "bank": "jpmorgan",
+    "delivery_cost": 1200,
+    "goods_total": 44400,
+    "custom_fee": 50
+  },
+  "items": [
+    {
+      "chrt_id": 33445566,
+      "track_number": "US456789123",
+      "price": 29900,
+      "rid": "rid_us456789rand",
+      "name": "Wireless Headphones",
+      "sale": 12,
+      "size": "0",
+      "total_price": 29900,
+      "nm_id": 77788899,
+      "brand": "Sony",
+      "status": 202
+    },
+    {
+      "chrt_id": 22334455,
+      "track_number": "US456789123",
+      "price": 14500,
+      "rid": "rid_us456790rand",
+      "name": "Smart Watch",
+      "sale": 20,
+      "size": "0",
+      "total_price": 11600,
+      "nm_id": 66554433,
+      "brand": "Apple",
+      "status": 200
+    },
+    {
+      "chrt_id": 99887766,
+      "track_number": "US456789123",
+      "price": 2900,
+      "rid": "rid_us456791rand",
+      "name": "USB-C Cable",
+      "sale": 5,
+      "size": "0",
+      "total_price": 2755,
+      "nm_id": 55443322,
+      "brand": "Anker",
+      "status": 200
+    }
+  ],
+  "locale": "en",
+  "internal_signature": "signature_67890",
+  "customer_id": "us_customer_2023",
+  "delivery_service": "ups",
+  "shardkey": "5",
+  "sm_id": 789,
+  "date_created": "2023-04-15T16:45:20-04:00",
+  "oof_shard": "3"
+}

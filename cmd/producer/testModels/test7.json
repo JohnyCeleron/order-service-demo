@@ -1,0 +1,88 @@
+{
+  "order_uid": "c9d8e7f6a5b4c3d2rand",
+  "track_number": "FR789012345",
+  "entry": "WBFR",
+  "delivery": {
+    "name": "Pierre Dubois",
+    "phone": "+33123456789",
+    "zip": "75008",
+    "city": "Paris",
+    "address": "Avenue des Champs-Élysées 56",
+    "region": "Île-de-France",
+    "email": "pierre.dubois@orange.fr"
+  },
+  "payment": {
+    "transaction": "c9d8e7f6a5b4c3d2rand",
+    "request_id": "req_6677889900",
+    "currency": "EUR",
+    "provider": "credit-mutuel",
+    "amount": 128750,
+    "payment_dt": 1682899200,
+    "bank": "bnp-paribas",
+    "delivery_cost": 2500,
+    "goods_total": 126250,
+    "custom_fee": 0
+  },
+  "items": [
+    {
+      "chrt_id": 44556677,
+      "track_number": "FR789012345",
+      "price": 89900,
+      "rid": "rid_fr789012rand",
+      "name": "Appareil Photo Professionnel",
+      "sale": 15,
+      "size": "0",
+      "total_price": 76415,
+      "nm_id": 33445566,
+      "brand": "Canon",
+      "status": 202
+    },
+    {
+      "chrt_id": 55667788,
+      "track_number": "FR789012345",
+      "price": 36350,
+      "rid": "rid_fr789013rand",
+      "name": "Objectif 50mm",
+      "sale": 10,
+      "size": "0",
+      "total_price": 32715,
+      "nm_id": 77889900,
+      "brand": "Sigma",
+      "status": 200
+    },
+    {
+      "chrt_id": 66778899,
+      "track_number": "FR789012345",
+      "price": 12300,
+      "rid": "rid_fr789014rand",
+      "name": "Trépied Photographique",
+      "sale": 25,
+      "size": "0",
+      "total_price": 9225,
+      "nm_id": 88990011,
+      "brand": "Manfrotto",
+      "status": 200
+    },
+    {
+      "chrt_id": 77889900,
+      "track_number": "FR789012345",
+      "price": 7800,
+      "rid": "rid_fr789015rand",
+      "name": "Sac Photo",
+      "sale": 5,
+      "size": "M",
+      "total_price": 7410,
+      "nm_id": 99001122,
+      "brand": "Lowepro",
+      "status": 200
+    }
+  ],
+  "locale": "fr",
+  "internal_signature": "signature_24680",
+  "customer_id": "french_photographer_56",
+  "delivery_service": "chronopost",
+  "shardkey": "9",
+  "sm_id": 234,
+  "date_created": "2023-05-01T09:15:40+02:00",
+  "oof_shard": "4"
+}
