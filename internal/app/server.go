@@ -22,6 +22,8 @@ const (
 	idleTimeout  time.Duration = 60 * time.Second
 )
 
+const Addr = ":8081"
+
 func setupServer(service *order.OrderService) *http.Server {
 	r := chi.NewRouter()
 	handler := handler.New(service)
@@ -37,7 +39,7 @@ func setupServer(service *order.OrderService) *http.Server {
 	})
 	r.Get("/swagger/*", httpSwagger.WrapHandler)
 	return &http.Server{
-		Addr:         ":8081",
+		Addr:         Addr,
 		Handler:      r,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
